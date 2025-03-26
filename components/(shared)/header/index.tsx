@@ -4,6 +4,7 @@ import { ShoppingCart, UserIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import ModeToggle from './mode-toggle';
 
 const Header = () => {
 	return (
@@ -23,7 +24,8 @@ const Header = () => {
 						</span>
 					</Link>
 				</div>
-				<div className='space-x-2 '>
+				<div className='flex items-center  space-x-2 '>
+					<ModeToggle />
 					<Button asChild variant='ghost'>
 						<Link href='/cart'>
 							<ShoppingCart /> Cart
