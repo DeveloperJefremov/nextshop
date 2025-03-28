@@ -18,7 +18,7 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "Account" (
     "id" UUID NOT NULL,
-    "user_id" TEXT NOT NULL,
+    "user_id" UUID NOT NULL,
     "type" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "provider_account_id" TEXT NOT NULL,
