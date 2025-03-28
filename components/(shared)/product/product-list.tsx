@@ -4,11 +4,11 @@ import ProductCard from './product-card';
 
 const ProductList = ({
 	data,
-	title,
+	// title,
 	limit,
 }: {
 	data: Product[];
-	title?: string;
+	// title?: string;
 	limit?: number;
 }) => {
 	const limitedData = limit ? data.slice(0, limit) : data;
