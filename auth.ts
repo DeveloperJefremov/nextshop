@@ -14,6 +14,7 @@ export const config = {
 		strategy: 'jwt',
 		maxAge: 30 * 24 * 60 * 60, //30 days
 	},
+
 	adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
@@ -23,10 +24,12 @@ export const config = {
 			},
 			async authorize(credentials) {
 				if (credentials === null) return null;
-
+				// console.log('Incoming credentials:', credentials);
 				//Find user in database
 				const user = await prisma.user.findFirst({
-					where: { email: credentials.email as string },
+					where: {
+						email: credentials.email as string,
+					},
 				});
 
 				//Check if user exists and if the password matches
@@ -39,6 +42,7 @@ export const config = {
 					if (isMatch) {
 						return {
 							id: user.id,
+							// id: String(user.id)
 							name: user.name,
 							email: user.email,
 							role: user.role,
@@ -64,5 +68,11 @@ export const config = {
 		},
 	},
 } satisfies NextAuthConfig;
+
+// const inputPassword = hashSync('12345', 10);
+// const hashedPassword =
+// 	'$2a$10$9h9xGpmOX1lXREBjF311d.BgLCB0aYHebq1lHv6cWlTNMm02Vi8a';
+
+// console.log(compareSync(inputPassword, hashedPassword)); // должно быть true
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
