@@ -69,10 +69,4 @@ export const config = {
 	},
 } satisfies NextAuthConfig;
 
-// const inputPassword = hashSync('12345', 10);
-// const hashedPassword =
-// 	'$2a$10$9h9xGpmOX1lXREBjF311d.BgLCB0aYHebq1lHv6cWlTNMm02Vi8a';
-
-// console.log(compareSync(inputPassword, hashedPassword)); // должно быть true
-
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
