@@ -2,9 +2,27 @@
 import { auth } from '@/auth';
 import { prisma } from '@/db/prisma';
 import { CartItem } from '@/types';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
-import { convertToPlainObject, formatError } from '../utils';
-import { cartItemSchema } from '../validators';
+import { convertToPlainObject, formatError, round2 } from '../utils';
+import { cartItemSchema, insertCartSchema } from '../validators';
+
+//Calculate cart prices
+const calcPrice = (items: CartItem[]) => {
+	const itemsPrice = round2(
+			items.reduce((acc, item) => acc + Number(item.price) * item.qty, 0)
+		),
+		shippingPrice = round2(itemsPrice > 100 ? 0 : 10),
+		taxPrice = round2(0.15 * itemsPrice),
+		totalPrice = round2(itemsPrice + taxPrice + shippingPrice);
+
+	return {
+		itemsPrice: itemsPrice.toFixed(2),
+		shippingPrice: shippingPrice.toFixed(2),
+		taxPrice: taxPrice.toFixed(2),
+		totalPrice: totalPrice.toFixed(2),
+	};
+};
 
 export async function addItemToCart(data: CartItem) {
 	try {
@@ -26,18 +44,37 @@ export async function addItemToCart(data: CartItem) {
 		const product = await prisma.product.findFirst({
 			where: { id: item.productId },
 		});
+		if (!product) throw new Error('Product not found');
+
+		if (!cart) {
+			//Create new cart object
+			const newCart = insertCartSchema.parse({
+				userId: userId,
+				items: [item],
+				sessionCartId: sessionCartId,
+				...calcPrice([item]),
+			});
+			// console.log(newCart);
+
+			//Add to database
+			await prisma.cart.create({ data: newCart });
+
+			//Revalidate product page
+			revalidatePath(`/product/${product.slug}`);
+			return {
+				success: true,
+				message: 'Item added to cart',
+			};
+		} else {
+		}
 
 		//Testing
-		console.log({
-			'Session Cart ID': sessionCartId,
-			'User  ID': userId,
-			'Item requested': item,
-			'Product Found': product,
-		});
-		return {
-			success: true,
-			message: 'Item added to cart',
-		};
+		// console.log({
+		// 	'Session Cart ID': sessionCartId,
+		// 	'User  ID': userId,
+		// 	'Item requested': item,
+		// 	'Product Found': product,
+		// });
 	} catch (error) {
 		return {
 			success: false,
