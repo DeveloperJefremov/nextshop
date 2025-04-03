@@ -14,7 +14,7 @@ import { updateUserPaymentMethod } from '@/lib/actions/user.actions';
 import { DEFAULT_PAYMENT_METHOD, PAYMENT_METHODS } from '@/lib/constants';
 import { paymentMethodSchema } from '@/lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowRight, Loader } from 'lucide-react';
+import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -105,9 +105,9 @@ const PaymentMethodForm = ({
 						<div className='flex gap-2'>
 							<Button type='submit' disabled={isPending}>
 								{isPending ? (
-									<Loader className='w-4 h-4 animate-spin' />
+									<LoaderIcon className='w-4 h-4 animate-spin' />
 								) : (
-									<ArrowRight className='w-4 h-4' />
+									<ArrowRightIcon className='w-4 h-4' />
 								)}{' '}
 								Continue
 							</Button>
