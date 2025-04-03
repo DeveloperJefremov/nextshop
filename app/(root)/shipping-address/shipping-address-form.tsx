@@ -33,8 +33,22 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress }) => {
 
 	const [isPending, startTransition] = useTransition();
 
-	const onSubmit = values => {
-		console.log(values);
+	const onSubmit: SubmitHandler<
+		z.infer<typeof shippingAddressSchema>
+	> = async values => {
+		startTransition(async () => {
+			const res = await updateUserAddress(values);
+
+			if (!res.success) {
+				toast({
+					variant: 'destructive',
+					description: res.message,
+				});
+				return;
+			}
+
+			router.push('/payment-method');
+		});
 	};
 	return (
 		<>
