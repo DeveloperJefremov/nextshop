@@ -267,7 +267,7 @@ export async function getMyOrders({
 	};
 }
 
-type SalesDataType = {
-	month: string;
-	totalSales: number;
-}[];
+// type SalesDataType = {
+// 	month: string;
+// 	totalSales: number;
+// }[];

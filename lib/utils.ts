@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from 'clsx';
+import qs from 'query-string';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -114,10 +115,33 @@ export const formatDateTime = (dateString: Date) => {
 	};
 };
 
-const testDate = new Date('2023-10-25T08:30:00Z'); // Example date string
-const formatted = formatDateTime(testDate);
+// const testDate = new Date('2023-10-25T08:30:00Z'); // Example date string
+// const formatted = formatDateTime(testDate);
 
-//Log the results
-console.log('Full DateTime', formatted.dateTime);
-console.log('Date only', formatted.dateOnly);
-console.log('Time only', formatted.timeOnly);
+// //Log the results
+// console.log('Full DateTime', formatted.dateTime);
+// console.log('Date only', formatted.dateOnly);
+// console.log('Time only', formatted.timeOnly);
+
+//Form the pagination links
+export function formUrlQuery({
+	params,
+	key,
+	value,
+}: {
+	params: string;
+	key: string;
+	value: string | null;
+}) {
+	const query = qs.parse(params);
+	query[key] = value;
+	return qs.stringifyUrl(
+		{
+			url: window.location.pathname,
+			query,
+		},
+		{
+			skipNull: true,
+		}
+	);
+}
