@@ -2,7 +2,7 @@ import Menu from '@/components/(shared)/header/menu';
 import { APP_NAME } from '@/lib/constants';
 import Image from 'next/image';
 import Link from 'next/link';
-import MainNav from './orders/mian-nav';
+import MainNav from './main-nav';
 
 export default function UserLayout({
 	children,
