@@ -274,18 +274,18 @@ export async function getMyOrders({
 // }[];
 
 type SalesDataType = {
-	month:string;
-	totalSales: number
-}
+	month: string;
+	totalSales: number;
+};
 
-//Get sales data and order summary
+// Get sales data and order summary
 export async function getOrderSummary() {
-	//Get counts for each resource
+	// Get counts for each resource
 	const ordersCount = await prisma.order.count();
 	const productsCount = await prisma.product.count();
 	const usersCount = await prisma.user.count();
 
-	//Calculate the total sales
+	// Calculate the total sales
 	const totalSales = await prisma.order.aggregate({
 		_sum: { totalPrice: true },
 	});
@@ -300,20 +300,21 @@ export async function getOrderSummary() {
 		totalSales: Number(entry.totalSales),
 	}));
 
-	 // Get latest sales
-	 const latestSales = await prisma.order.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      user: { select: { name: true } },
-    },
-    take: 6,
-  });
+	// Get latest sales
+	const latestSales = await prisma.order.findMany({
+		orderBy: { createdAt: 'desc' },
+		include: {
+			user: { select: { name: true } },
+		},
+		take: 6,
+	});
 
-  return {
-    ordersCount,
-    productsCount,
-    usersCount,
-    totalSales,
-    latestSales,
-    salesData,
-  };
+	return {
+		ordersCount,
+		productsCount,
+		usersCount,
+		totalSales,
+		latestSales,
+		salesData,
+	};
+}
