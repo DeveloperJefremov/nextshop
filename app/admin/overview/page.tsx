@@ -93,7 +93,13 @@ const AdminOverviewPage = async () => {
 					<CardHeader>
 						<CardTitle>Overview</CardTitle>
 					</CardHeader>
-					<CardContent>{/* CHARTHERE */}</CardContent>
+					<CardContent>
+						<Charts
+							data={{
+								salesData: summary.salesData,
+							}}
+						/>
+					</CardContent>
 				</Card>
 				<Card className='col-span-3'>
 					<CardHeader>
