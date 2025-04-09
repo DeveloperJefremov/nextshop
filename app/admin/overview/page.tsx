@@ -9,16 +9,13 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { getOrderSummary } from '@/lib/actions/order.actions';
+
 import { requireAdmin } from '@/lib/auth-guard';
 import { formatCurrency, formatDateTime, formatNumber } from '@/lib/utils';
 import {
-	BadgeDollarSign,
 	BadgeDollarSignIcon,
-	Barcode,
 	BarcodeIcon,
-	CreditCard,
 	CreditCardIcon,
-	Users,
 	UsersIcon,
 } from 'lucide-react';
 import { Metadata } from 'next';
@@ -30,6 +27,7 @@ export const metadata: Metadata = {
 };
 
 const AdminOverviewPage = async () => {
+	await requireAdmin();
 	const session = await auth();
 
 	if (session?.user?.role !== 'admin') {
