@@ -51,9 +51,61 @@ const ProductForm = ({
 		defaultValues:
 			product && type === 'Update' ? product : productDefaultValues,
 	});
+
+	const onSubmit: SubmitHandler<
+		z.infer<typeof insertProductSchema>
+	> = async values => {
+		// On Create
+		if (type === 'Create') {
+			const res = await createProduct(values);
+
+			if (!res.success) {
+				toast({
+					variant: 'destructive',
+					description: res.message,
+				});
+			} else {
+				toast({
+					description: res.message,
+				});
+				router.push('/admin/products');
+			}
+		}
+
+		// On Update
+		if (type === 'Update') {
+			if (!productId) {
+				router.push('/admin/products');
+				return;
+			}
+
+			const res = await updateProduct({ ...values, id: productId });
+
+			if (!res.success) {
+				toast({
+					variant: 'destructive',
+					description: res.message,
+				});
+			} else {
+				toast({
+					description: res.message,
+				});
+				router.push('/admin/products');
+			}
+		}
+	};
+
+	const images = form.watch('images');
+	const isFeatured = form.watch('isFeatured');
+	const banner = form.watch('banner');
+
 	return (
 		<Form {...form}>
-			<form className='space-y-8'>
+			<form
+				method='POST'
+				onSubmit={form.handleSubmit(onSubmit)}
+				className='space-y-8'
+			>
 				<div className='flex flex-col md:flex-row gap-5'>
 					{/* Name */}
 					<FormField
