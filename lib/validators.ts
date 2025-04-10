@@ -9,6 +9,7 @@ const currency = z
 		'Price must have exactly two decimal places'
 	);
 
+// Schema for inserting products
 export const insertProductSchema = z.object({
 	name: z.string().min(3, 'Name must be at least 3 characters'),
 	slug: z.string().min(3, 'Slug must be at least 3 characters'),
@@ -25,6 +26,9 @@ export const insertProductSchema = z.object({
 // Schema for updating products
 export const updateProductSchema = insertProductSchema.extend({
 	id: z.string().min(1, 'Id is required'),
+});
+export const safeUpdateProductSchema = updateProductSchema.partial({
+	id: true,
 });
 
 //Schema for signing users in
