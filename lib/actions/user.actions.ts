@@ -2,9 +2,11 @@
 import { auth, signIn, signOut } from '@/auth';
 import { prisma } from '@/db/prisma';
 import { ShippingAddress } from '@/types';
+import { Prisma } from '@prisma/client';
 import { hashSync } from 'bcrypt-ts-edge';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import { z } from 'zod';
+import { PAGE_SIZE } from '../constants';
 import { formatError } from '../utils';
 import {
 	paymentMethodSchema,
@@ -167,4 +169,41 @@ export async function updateProfile(user: { name: string; email: string }) {
 	} catch (error) {
 		return { success: false, message: formatError(error) };
 	}
+}
+
+// Get all the users
+export async function getAllUsers({
+	limit = PAGE_SIZE,
+	page,
+	query,
+}: {
+	limit?: number;
+	page: number;
+	query: string;
+}) {
+	const queryFilter: Prisma.UserWhereInput =
+		query && query !== 'all'
+			? {
+					name: {
+						contains: query,
+						mode: 'insensitive',
+					} as Prisma.StringFilter,
+			  }
+			: {};
+
+	const data = await prisma.user.findMany({
+		where: {
+			...queryFilter,
+		},
+		orderBy: { createdAt: 'desc' },
+		take: limit,
+		skip: (page - 1) * limit,
+	});
+
+	const dataCount = await prisma.user.count();
+
+	return {
+		data,
+		totalPages: Math.ceil(dataCount / limit),
+	};
 }
