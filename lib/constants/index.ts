@@ -50,6 +50,6 @@ export const productDefaultValues = {
 	banner: null,
 };
 
-export const USER_ROLE = process.env.USEE_ROLES
+export const USER_ROLES = process.env.USEE_ROLES
 	? process.env.USER_ROLES?.split(', ')
 	: ['admin', 'user'];
