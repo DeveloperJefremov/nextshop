@@ -1,8 +1,10 @@
 import Menu from '@/components/(shared)/header/menu';
-import { Input } from '@/components/ui/input';
+
 import { APP_NAME } from '@/lib/constants';
 import Image from 'next/image';
 import Link from 'next/link';
+
+import AdminSearch from '@/components/admin/admin-search';
 import MainNav from './main-nav';
 
 export default function ADMINLayout({
@@ -25,11 +27,7 @@ export default function ADMINLayout({
 						</Link>
 						<MainNav className='mx-6' />
 						<div className='ml-auto items-center flex space-x-4'>
-							<Input
-								type='search'
-								placeholder='Search...'
-								className='md:w-[100px] lg:w-[300px]'
-							/>
+							<AdminSearch />
 							<Menu />
 						</div>
 					</div>
