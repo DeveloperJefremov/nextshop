@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import CategoryDrawer from './category-drawer';
 import Menu from './menu';
+import Search from './search';
 
 const Header = () => {
 	return (
@@ -24,6 +25,10 @@ const Header = () => {
 						</span>
 					</Link>
 				</div>
+				<div className='hidden md:block'>
+					<Search />
+				</div>
+
 				<Menu />
 			</div>
 		</header>
