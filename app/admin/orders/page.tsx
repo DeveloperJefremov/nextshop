@@ -67,6 +67,7 @@ const AdminOrdersPage = async (props: {
 									{formatDateTime(order.createdAt).dateTime}
 								</TableCell>
 								<TableCell>{order.user.name}</TableCell>
+
 								<TableCell>{formatCurrency(order.totalPrice)}</TableCell>
 								<TableCell>
 									{order.isPaid && order.paidAt
