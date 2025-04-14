@@ -16,7 +16,7 @@ import { shippingAddressDefaultValues } from '@/lib/constants';
 import { shippingAddressSchema } from '@/lib/validators';
 import { ShippingAddress } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowRight, ArrowRightIcon, LoaderIcon } from 'lucide-react';
+import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form';
@@ -173,7 +173,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress }) => {
 								{isPending ? (
 									<LoaderIcon className='w-4 h-4 animate-spin' />
 								) : (
-									<ArrowRight className='w-4 h-4' />
+									<ArrowRightIcon className='w-4 h-4' />
 								)}
 								Continue
 							</Button>
