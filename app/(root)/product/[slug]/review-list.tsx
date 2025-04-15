@@ -9,6 +9,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 // import { getReviews } from '@/lib/actions/review.actions';
+import Rating from '@/components/(shared)/product/rating';
 import { getReviews } from '@/lib/actions/review.actions';
 import { formatDateTime } from '@/lib/utils';
 import { Review } from '@/types';
@@ -92,7 +93,7 @@ const ReviewList = ({
 						</CardHeader>
 						<CardContent>
 							<div className='flex space-x-4 text-sm text-muted-foreground'>
-								{/* <Rating value={review.rating} /> */}
+								<Rating value={review.rating} />
 								<div className='flex items-center'>
 									<User className='mr-1 h-3 w-3' />
 									{review.user ? review.user.name : 'User'}
