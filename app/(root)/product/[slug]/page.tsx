@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { getMyCart } from '@/lib/actions/cart.actions';
 import { getProductBySlug } from '@/lib/actions/product.actions';
 
+import Rating from '@/components/(shared)/product/rating';
 import { notFound } from 'next/navigation';
 import React from 'react';
 import ReviewList from './review-list';
@@ -36,9 +37,8 @@ const ProductDetailsPage = async (props: {
 								{product.brand} {product.category}
 							</p>
 							<h1 className='h3-bold'>{product.name}</h1>
-							<p>
-								{product.rating} of {product.numReviews} Reviews
-							</p>
+							<Rating value={Number(product.rating)} />
+							<p>{product.numReviews} reviews</p>
 							<div className='flex flex-col sm:flex-row sm:items-center gap-3'>
 								<ProductPrice
 									value={Number(product.price)}
