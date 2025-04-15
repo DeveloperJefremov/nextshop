@@ -2,7 +2,8 @@
 
 import { auth } from '@/auth';
 import { prisma } from '@/db/prisma';
-import { CartItem, PaymentResult } from '@/types';
+import { sendPurchaseReceipt } from '@/email';
+import { CartItem, PaymentResult, ShippingAddress } from '@/types';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { isRedirectError } from 'next/dist/client/components/redirect';
@@ -190,7 +191,7 @@ export async function approvePayPalOrder(
 	}
 }
 
-//Update order to paid
+// Update order to paid
 export async function updateOrderToPaid({
 	orderId,
 	paymentResult,
@@ -198,38 +199,42 @@ export async function updateOrderToPaid({
 	orderId: string;
 	paymentResult?: PaymentResult;
 }) {
-	//Get order from database
+	// Get order from database
 	const order = await prisma.order.findFirst({
-		where: { id: orderId },
-		include: { orderitems: true },
+		where: {
+			id: orderId,
+		},
+		include: {
+			orderitems: true,
+		},
 	});
-	if (!order) throw new Error('Order not found');
-	if (order.isPaid) throw new Error('Order already paid');
 
-	//Transaction to update order and account for product stock
+	if (!order) throw new Error('Order not found');
+
+	if (order.isPaid) throw new Error('Order is already paid');
+
+	// Transaction to update order and account for product stock
 	await prisma.$transaction(async tx => {
-		//Iterate over product and update stock
+		// Iterate over products and update stock
 		for (const item of order.orderitems) {
 			await tx.product.update({
 				where: { id: item.productId },
-				data: {
-					stock: {
-						increment: -item.qty,
-					},
-				},
+				data: { stock: { increment: -item.qty } },
 			});
 		}
-		//Set the order to paid
+
+		// Set the order to paid
 		await tx.order.update({
 			where: { id: orderId },
 			data: {
 				isPaid: true,
 				paidAt: new Date(),
-				paymentResult: paymentResult,
+				paymentResult,
 			},
 		});
 	});
-	//Get updated order after transaction
+
+	// Get updated order after transaction
 	const updatedOrder = await prisma.order.findFirst({
 		where: { id: orderId },
 		include: {
@@ -237,9 +242,17 @@ export async function updateOrderToPaid({
 			user: { select: { name: true, email: true } },
 		},
 	});
-	if (!updatedOrder) throw new Error('Order not found');
-}
 
+	if (!updatedOrder) throw new Error('Order not found');
+
+	sendPurchaseReceipt({
+		order: {
+			...updatedOrder,
+			shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
+			paymentResult: updatedOrder.paymentResult as PaymentResult,
+		},
+	});
+}
 // Get user's orders
 export async function getMyOrders({
 	limit = PAGE_SIZE,
@@ -338,7 +351,7 @@ export async function getAllOrders({
 							mode: 'insensitive',
 						} as Prisma.StringFilter,
 					},
-			  }
+				}
 			: {};
 
 	const data = await prisma.order.findMany({
