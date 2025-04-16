@@ -8,6 +8,10 @@ dotenv.config();
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export const sendPurchaseReceipt = async ({ order }: { order: Order }) => {
+	if (!order.user.email) {
+		throw new Error('User email is missing. Cannot send receipt.');
+	}
+
 	await resend.emails.send({
 		from: `${APP_NAME} <${SENDER_EMAIL}>`,
 		to: order.user.email,
